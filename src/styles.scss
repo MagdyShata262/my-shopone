@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Define Palettes
+$rose-palette: mat.$rose-palette;
+$red-palette: mat.$red-palette;
+$azure-palette: mat.$azure-palette;
+$blue-palette: mat.$blue-palette;
+$magenta-palette: mat.$magenta-palette;
+$violet-palette: mat.$violet-palette;
+$cyan-palette: mat.$cyan-palette;
+$orange-palette: mat.$orange-palette;
+
+// Define Themes
+$cyan-orange-theme: mat.define-theme((
+  color: (
+    primary: $cyan-palette,
+    tertiary: $orange-palette,
+    theme-type: light
+  )
+));
+
+$rose-red-theme: mat.define-theme((
+  color: (
+    primary: $rose-palette,
+    tertiary: $red-palette,
+    theme-type: light
+  )
+));
+
+$azure-blue-theme: mat.define-theme((
+  color: (
+    primary: $azure-palette,
+    tertiary: $blue-palette,
+    theme-type: light
+  )
+));
+
+$magenta-violet-theme: mat.define-theme((
+  color: (
+    primary: $magenta-palette,
+    tertiary: $violet-palette,
+    theme-type: light
+  )
+));
+
+// Default: Cyan & Orange
+html {
+  @include mat.all-component-themes($cyan-orange-theme);
+  @include mat.system-level-colors($cyan-orange-theme);
+  @include mat.system-level-typography($cyan-orange-theme);
+}
+
+// Theme Classes
+.rose-red-theme {
+  @include mat.all-component-colors($rose-red-theme);
+}
+
+.azure-blue-theme {
+  @include mat.all-component-colors($azure-blue-theme);
+}
+
+.magenta-violet-theme {
+  @include mat.all-component-colors($magenta-violet-theme);
+}
+
+.cyan-orange-theme {
+  @include mat.all-component-colors($cyan-orange-theme);
+}
+
+/* Base Styles */
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding-top: 56px; 
+}
+
+/* Dynamic Navbar based on Material Tokens */
+.navbar.bg-dark-custom {
+  background-color: var(--mat-sys-primary) !important;
+  color: var(--mat-sys-on-primary) !important;
+  
+  .navbar-brand, .nav-link {
+    color: var(--mat-sys-on-primary) !important;
+    opacity: 0.9;
+    &:hover, &.active {
+      opacity: 1;
+      font-weight: 600;
+    }
+  }
+
+  .navbar-toggler {
+    border-color: rgba(var(--mat-sys-on-primary-rgb), 0.5);
+    .navbar-toggler-icon {
+      filter: brightness(0) invert(1);
+    }
+  }
+}
+
+.main-content {
+  margin-top: 1.5rem;
+}
