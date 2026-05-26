@@ -1,103 +1,167 @@
 @use '@angular/material' as mat;
+@use 'sass:map';
 
-@include mat.core();
+:root {
 
-// Define Palettes
-$rose-palette: mat.$rose-palette;
-$red-palette: mat.$red-palette;
-$azure-palette: mat.$azure-palette;
-$blue-palette: mat.$blue-palette;
-$magenta-palette: mat.$magenta-palette;
-$violet-palette: mat.$violet-palette;
-$cyan-palette: mat.$cyan-palette;
-$orange-palette: mat.$orange-palette;
 
-// Define Themes
-$cyan-orange-theme: mat.define-theme((
-  color: (
-    primary: $cyan-palette,
-    tertiary: $orange-palette,
-    theme-type: light
-  )
-));
+  --primary: var(--mat-sys-primary);
+  --on-primary: var(--mat-sys-on-primary);
+  --secondary-container: var(--mat-sys-secondary-container);
+  --on-secondary-container: var(--mat-sys-on-secondary-container);
+  --error: var(--mat-sys-error);
 
-$rose-red-theme: mat.define-theme((
-  color: (
-    primary: $rose-palette,
-    tertiary: $red-palette,
-    theme-type: light
-  )
-));
+  // مسافات ثابتة (Spacing System)
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
 
-$azure-blue-theme: mat.define-theme((
-  color: (
-    primary: $azure-palette,
-    tertiary: $blue-palette,
-    theme-type: light
-  )
-));
 
-$magenta-violet-theme: mat.define-theme((
-  color: (
-    primary: $magenta-palette,
-    tertiary: $violet-palette,
-    theme-type: light
-  )
-));
 
-// Default: Cyan & Orange
+
+
+
+
+
+  @include mat.button-overrides(( // للأزرار العادية (التي لها خلفية ملونة كاملة)
+      filled-container-shape: 8px,
+
+      // للأزرار التي لها إطار (Outlined)
+      outlined-container-shape: 8px,
+
+      // للأزرار ذات الخلفية الخفيفة (Tonal)
+      tonal-container-shape: 8px,
+
+      // للأزرار المرفوعة (Protected/Elevated)
+      protected-container-shape: 8px,
+
+      // للأزرار النصية فقط (Text Buttons)
+      text-container-shape: 8px));
+
+  // تخصيص البطاقات (تأكد أيضاً من استخدام الأسماء الصحيحة)
+  @include mat.card-overrides((elevated-container-shape: 20px,
+      outlined-container-shape: 20px));
+}
+
+
+
+// :root {
+//   // اختصارات للمتغيرات الأكثر استخداماً لتسهيل كتابة الكود في المكونات
+//   --primary: var(--mat-sys-primary);
+//   --on-primary: var(--mat-sys-on-primary);
+//   --secondary-container: var(--mat-sys-secondary-container);
+//   --on-secondary-container: var(--mat-sys-on-secondary-container);
+//   --error: var(--mat-sys-error);
+
+//   // مسافات ثابتة (Spacing System)
+//   --spacing-sm: 8px;
+//   --spacing-md: 16px;
+//   --spacing-lg: 24px;
+
+//   // تخصيص البطاقات بشكل عالمي
+//   @include mat.card-overrides((elevated-container-shape: 20px,
+//       elevated-container-color: var(--mat-sys-surface-container-low),
+//       title-text-weight: 600));
+
+//   // تخصيص الأزرار
+//   @include mat.button-overrides((container-shape: 8px,
+//     ));
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================
+// 1. إعدادات الثيم الأساسية
+// ============================================
 html {
-  @include mat.all-component-themes($cyan-orange-theme);
-  @include mat.system-level-colors($cyan-orange-theme);
-  @include mat.system-level-typography($cyan-orange-theme);
+  // تفعيل الميزات الأساسية لمرة واحدة
+  @include mat.core();
+
+  // تعريف الثيم الموحد باستخدام نظام الـ Tokens
+  @include mat.theme((color: (primary: mat.$violet-palette,
+        tertiary: mat.$orange-palette,
+        theme-type: color-scheme, // الربط المباشر مع خاصية color-scheme للمتصفح
+      ),
+      typography: (brand-family: 'Poppins, sans-serif',
+        plain-family: 'Roboto, sans-serif',
+      ),
+      density: 0));
+
+  // التحكم الافتراضي
+  color-scheme: light;
+
+  &.dark-mode {
+    color-scheme: dark;
+    // تخصيص لون الخلفية في الوضع المظلم ليكون أكثر عمقاً (اختياري)
+    --mat-sys-surface: #121212;
+    --mat-sys-surface-container-low: #1e1e1e;
+  }
 }
 
-// Theme Classes
-.rose-red-theme {
-  @include mat.all-component-colors($rose-red-theme);
-}
-
-.azure-blue-theme {
-  @include mat.all-component-colors($azure-blue-theme);
-}
-
-.magenta-violet-theme {
-  @include mat.all-component-colors($magenta-violet-theme);
-}
-
-.cyan-orange-theme {
-  @include mat.all-component-colors($cyan-orange-theme);
-}
-
-/* Base Styles */
+// ============================================
+// 2. تحسينات الجسم والانتقالات السلسة
+// ============================================
 body {
+  height: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  padding-top: 56px; 
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+
+  // جعل الانتقال بين الوضعين فائق النعومة لجميع العناصر
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s ease;
 }
 
-/* Dynamic Navbar based on Material Tokens */
-.navbar.bg-dark-custom {
-  background-color: var(--mat-sys-primary) !important;
-  color: var(--mat-sys-on-primary) !important;
-  
-  .navbar-brand, .nav-link {
-    color: var(--mat-sys-on-primary) !important;
-    opacity: 0.9;
-    &:hover, &.active {
-      opacity: 1;
-      font-weight: 600;
-    }
-  }
+// ============================================
+// 3. تطوير شريط الأدوات والمكونات العلوية
+// ============================================
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-  .navbar-toggler {
-    border-color: rgba(var(--mat-sys-on-primary-rgb), 0.5);
-    .navbar-toggler-icon {
-      filter: brightness(0) invert(1);
-    }
+  // استخدام حاوية السطح المناسبة لشريط الأدوات (M3 standard)
+  background: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  // استخدام الظلال الجديدة من نظام Tokens
+  box-shadow: var(--mat-sys-level1);
+  transition: all 0.3s ease;
+
+  &.is-scrolled {
+    box-shadow: var(--mat-sys-level3);
+    background: var(--mat-sys-surface-container-high);
   }
 }
 
-.main-content {
-  margin-top: 1.5rem;
+// ============================================
+// 4. نظام "متغيرات التطبيق" المطور (App Design Tokens)
+// ============================================
+
+
+// ============================================
+// 5. الحاويات المتجاوبة (Responsive Layout)
+// ============================================
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  box-sizing: border-box;
+}
+
+// فئة مساعدة للنصوص الثانوية التي تتغير بتغير الثيم
+.text-muted {
+  color: var(--mat-sys-on-surface-variant);
 }

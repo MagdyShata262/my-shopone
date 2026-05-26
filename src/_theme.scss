@@ -1,0 +1,27 @@
+@use '@angular/material' as mat;
+
+// Define the light and dark theme configurations using modern M3-like structure
+// (Note: In v20, mat.theme handles the distribution of tokens)
+
+@mixin app-theme($config) {
+  @include mat.theme($config);
+}
+
+// Light theme config
+$light-theme: (
+  color: (primary: mat.$violet-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: Roboto,
+  density: 0
+);
+
+// Dark theme config
+$dark-theme: (
+  color: (primary: mat.$violet-palette,
+    tertiary: mat.$blue-palette,
+    theme-type: dark,
+  ),
+  typography: Roboto,
+  density: 0
+);
