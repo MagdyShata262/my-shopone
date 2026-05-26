@@ -1,145 +1,99 @@
-import { Injectable, resource } from '@angular/core';
-import { Product } from './product.model';
+// features/products/services/product.service.ts
+
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {
+  Product,
+  ProductsResponse,
+  ProductCategory,
+  AddProductPayload,
+} from '../app/product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private readonly products: Product[] = [
-    {
-      id: 1,
-      title: 'Wireless Headphones',
-      price: 99.99,
-      description: 'High-quality wireless headphones with noise cancellation.',
-      thumbnail: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
-      category: 'Electronics',
-      discountPercentage: 10,
-      rating: 4.5,
-      stock: 15,
-      tags: ['electronics', 'audio'],
-      brand: 'AudioPhile',
-      sku: 'HP-WL-001',
-      weight: 0.35,
-      dimensions: { width: 18, height: 20, depth: 8 },
-      warrantyInformation: '1 year warranty',
-      shippingInformation: 'Ships overnight',
-      availabilityStatus: 'In Stock',
-      reviews: [],
-      returnPolicy: '30-day return policy',
-      minimumOrderQuantity: 1,
-      meta: {
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        barcode: '123456789012',
-        qrCode: 'https://example.com/qr'
-      },
-      images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500']
-    },
-    {
-      id: 2,
-      title: 'Smart Watch',
-      price: 199.99,
-      description: 'Modern smart watch with fitness tracking features.',
-      thumbnail: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
-      category: 'Electronics',
-      discountPercentage: 15,
-      rating: 4.7,
-      stock: 8,
-      tags: ['electronics', 'wearable'],
-      brand: 'WristTech',
-      sku: 'SW-MT-002',
-      weight: 0.15,
-      dimensions: { width: 4, height: 4, depth: 1 },
-      warrantyInformation: '2 year warranty',
-      shippingInformation: 'Ships in 2-3 business days',
-      availabilityStatus: 'Low Stock',
-      reviews: [],
-      returnPolicy: '14-day return policy',
-      minimumOrderQuantity: 1,
-      meta: {
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        barcode: '234567890123',
-        qrCode: 'https://example.com/qr'
-      },
-      images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500']
-    },
-    {
-      id: 3,
-      title: 'Coffee Mug',
-      price: 15.00,
-      description: 'Durable ceramic coffee mug with a sleek design.',
-      thumbnail: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500',
-      category: 'Home',
-      discountPercentage: 0,
-      rating: 4.2,
-      stock: 50,
-      tags: ['home', 'kitchen'],
-      brand: 'Ceramica',
-      sku: 'CM-CR-003',
-      weight: 0.4,
-      dimensions: { width: 8, height: 10, depth: 8 },
-      warrantyInformation: 'No warranty',
-      shippingInformation: 'Ships in 3-5 business days',
-      availabilityStatus: 'In Stock',
-      reviews: [],
-      returnPolicy: '30-day return policy',
-      minimumOrderQuantity: 2,
-      meta: {
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        barcode: '345678901234',
-        qrCode: 'https://example.com/qr'
-      },
-      images: ['https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500']
-    },
-    {
-      id: 4,
-      title: 'Leather Wallet',
-      price: 45.00,
-      description: 'Genuine leather wallet with multiple card slots.',
-      thumbnail: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500',
-      category: 'Accessories',
-      discountPercentage: 5,
-      rating: 4.8,
-      stock: 20,
-      tags: ['accessories', 'leather'],
-      brand: 'HideAndSeek',
-      sku: 'LW-GL-004',
-      weight: 0.1,
-      dimensions: { width: 11, height: 9, depth: 2 },
-      warrantyInformation: 'Lifetime warranty against manufacturing defects',
-      shippingInformation: 'Ships in 1-2 business days',
-      availabilityStatus: 'In Stock',
-      reviews: [],
-      returnPolicy: '30-day return policy',
-      minimumOrderQuantity: 1,
-      meta: {
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
-        barcode: '456789012345',
-        qrCode: 'https://example.com/qr'
-      },
-      images: ['https://images.unsplash.com/photo-1627123424574-724758594e93?w=500']
-    }
-  ];
+  private http = inject(HttpClient);
+  private baseUrl = 'https://dummyjson.com/products';
 
   /**
-   * Resource to fetch all products.
-   * In a real app, this would use HttpClient or fetch to get data from an API.
+   * 1. جلب جميع المنتجات مع دعم Pagination (Limit & Skip) والـ Selection والـ Sorting
    */
-  productsResource = resource({
-    loader: async () => {
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return this.products;
+  getProducts(options?: {
+    limit?: number;
+    skip?: number;
+    select?: string;
+    sortBy?: string;
+    order?: 'asc' | 'desc';
+  }): Observable<ProductsResponse> {
+    let params = new HttpParams();
+
+    if (options) {
+      if (options.limit !== undefined) params = params.set('limit', options.limit.toString());
+      if (options.skip !== undefined) params = params.set('skip', options.skip.toString());
+      if (options.select) params = params.set('select', options.select);
+      if (options.sortBy) params = params.set('sortBy', options.sortBy);
+      if (options.order) params = params.set('order', options.order);
     }
-  });
+
+    return this.http.get<ProductsResponse>(this.baseUrl, { params });
+  }
 
   /**
-   * Get a single product by ID.
+   * 2. جلب منتج واحد بواسطة الـ ID
    */
-  getProduct(id: number): Product | undefined {
-    return this.products.find(p => p.id === id);
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * 3. البحث عن المنتجات بالاسم أو كلمة مفتاحية
+   */
+  searchProducts(query: string): Observable<ProductsResponse> {
+    let params = new HttpParams().set('q', query);
+    return this.http.get<ProductsResponse>(`${this.baseUrl}/search`, { params });
+  }
+
+  /**
+   * 4. جلب جميع تصنيفات المنتجات (كـ كائنات تحتوي على slug, name, url)
+   */
+  getCategories(): Observable<ProductCategory[]> {
+    return this.http.get<ProductCategory[]>(`${this.baseUrl}/categories`);
+  }
+
+  /**
+   * 5. جلب قائمة أسماء التصنيفات فقط (كـ مصفوفة نصوص)
+   */
+  getCategoryList(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/category-list`);
+  }
+
+  /**
+   * 6. جلب المنتجات التابعة لتصنيف معين
+   */
+  getProductsByCategory(categorySlug: string): Observable<ProductsResponse> {
+    return this.http.get<ProductsResponse>(`${this.baseUrl}/category/${categorySlug}`);
+  }
+
+  /**
+   * 7. إضافة منتج جديد (محاكاة POST)
+   */
+  addProduct(product: AddProductPayload): Observable<Product> {
+    return this.http.post<Product>(`${this.baseUrl}/add`, product);
+  }
+
+  /**
+   * 8. تحديث منتج (محاكاة PUT أو PATCH)
+   */
+  updateProduct(id: number, product: Partial<AddProductPayload>): Observable<Product> {
+    return this.http.patch<Product>(`${`${this.baseUrl}/${id}`}`, product);
+  }
+
+  /**
+   * 9. حذف منتج (محاكاة DELETE)
+   */
+  deleteProduct(id: number): Observable<Product & { isDeleted: boolean; deletedOn: string }> {
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
   }
 }
