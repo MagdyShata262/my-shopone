@@ -1,0 +1,22 @@
+.filter-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
+  mat-chip-listbox {
+    display: inline-block;
+  }
+}
+
+.loading-placeholder {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  padding: 0.5rem;
+}

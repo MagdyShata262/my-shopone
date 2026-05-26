@@ -1,88 +1,23 @@
-<!-- ✅ شريط الأدوات -->
-<mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="القائمة">
-    <mat-icon>menu</mat-icon>
-  </button>
-
-  <span>تطبيقي</span>
-
-  <span class="example-spacer"></span>
-
+<mat-toolbar color="primary" class="app-toolbar">
+  <mat-icon class="logo-icon">restaurant_menu</mat-icon>
+  <span>Smart Recipe Box</span>
+  <span class="spacer"></span>
   <app-theme-switcher></app-theme-switcher>
-
-  <button mat-icon-button class="example-icon favorite-icon" aria-label="المفضلة">
-    <mat-icon>favorite</mat-icon>
-  </button>
-
-  <button mat-icon-button class="example-icon" aria-label="مشاركة">
-    <mat-icon>share</mat-icon>
-  </button>
 </mat-toolbar>
 
-<!-- محتوى الصفحة -->
-<div class="main-content">
-
-  <br>
-
-  <div class="container px-5">
-    <mat-card appearance="raised">
-      <mat-card-header>
-        <mat-card-title>🎨 تجربة الأنماط</mat-card-title>
-        <mat-card-subtitle>مرحباً بك في التطبيق</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <p>
-          هذا التطبيق يستخدم <strong>Angular Material</strong> مع نظام سمات متكامل.
-        </p>
-      </mat-card-content>
-
-      <mat-card-actions>
-        <button mat-raised-button color="primary">زر أساسي</button>
-        <button mat-button color="primary">زر نصي</button>
-        <button mat-stroked-button color="primary">زر بإطار</button>
-      </mat-card-actions>
-    </mat-card>
+<main class="content-area">
+  @if (selectedProductId(); as id) {
+  <app-product-detail [productId]="id" (close)="onDetailClose()"></app-product-detail>
+  } @else {
+  <div class="search-section">
+    <app-product-search></app-product-search>
+    <app-category-filter></app-category-filter>
   </div>
 
-  <br>
+  <app-product-list (productSelected)="onProductSelected($event)"></app-product-list>
+  }
+</main>
 
-  <!-- بطاقة بسيطة -->
-  <mat-card>
-    <mat-card-content>
-      ✨ هذه بطاقة تستخدم ألوان الثيم الافتراضي!
-    </mat-card-content>
-  </mat-card>
-
-  <br>
-
-  <!-- بطاقات منتج -->
-  <div class="container px-5">
-    <mat-card appearance="raised">
-      <mat-card-header>
-        <mat-card-title>عنوان المنتج</mat-card-title>
-        <mat-card-subtitle>وصف قصير للمنتج هنا</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <p>هذا المحتوى سيظهر داخل البطاقة المرتفعة.</p>
-      </mat-card-content>
-
-      <mat-card-actions>
-        <button mat-raised-button color="primary">شراء الآن</button>
-        <button mat-button>تفاصيل</button>
-      </mat-card-actions>
-    </mat-card>
-
-    <br>
-
-    <mat-card appearance="outlined">
-      <mat-card-content>
-        🎨 هذه بطاقة بإطار.
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <br><br>
-
-</div>
+<footer class="app-footer">
+  <p>&copy; 2026 Smart Recipe Box. Powered by Angular 21.</p>
+</footer>

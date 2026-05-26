@@ -1,0 +1,41 @@
+<div class="list-container">
+  @if (productService.productsResource.isLoading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Fetching amazing recipes...</p>
+    </div>
+  } @else if (productService.productsResource.error()) {
+    <div class="error-state">
+      <p>Oops! Something went wrong while fetching recipes.</p>
+      <button mat-stroked-button (click)="productService.productsResource.reload()">
+        Try Again
+      </button>
+    </div>
+  } @else {
+    @let products = productService.productsResource.value();
+    @if (products && products.length > 0) {
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <mat-card class="product-card">
+            <img mat-card-image [src]="product.thumbnail" [alt]="product.title" class="product-image">
+            <mat-card-header>
+              <mat-card-title>{{ product.title }}</mat-card-title>
+              <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="price">{{ product.price | currency }}</p>
+              <p class="description">{{ product.description | slice:0:100 }}...</p>
+            </mat-card-content>
+            <mat-card-actions align="end">
+              <button mat-button (click)="selectProduct(product.id)">VIEW DETAILS</button>
+            </mat-card-actions>
+          </mat-card>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <p>No recipes found matching your search.</p>
+      </div>
+    }
+  }
+</div>

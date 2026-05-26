@@ -1,0 +1,129 @@
+.detail-container {
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.back-button {
+  margin-bottom: 1rem;
+}
+
+.product-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.image-gallery {
+  .main-image {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: var(--mat-sys-level1);
+  }
+
+  .thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+
+    .thumb {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 2px solid transparent;
+
+      &:hover {
+        border-color: var(--mat-sys-primary);
+      }
+    }
+  }
+}
+
+.info-panel {
+  color: var(--mat-sys-on-surface);
+
+  h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2.5rem;
+    color: var(--mat-sys-primary);
+  }
+
+  .meta-row {
+    margin-bottom: 1rem;
+    color: var(--mat-sys-on-surface-variant);
+    .category {
+      text-transform: uppercase;
+      font-weight: bold;
+      margin-right: 1rem;
+    }
+  }
+
+  .price-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .price {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--mat-sys-secondary);
+    }
+
+    .discount {
+      background: var(--mat-sys-error);
+      color: var(--mat-sys-on-error);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+  }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    color: #f39c12; // Star color usually stays consistent, but could use tertiary
+    mat-icon {
+      font-size: 1.2rem;
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+
+  .description {
+    line-height: 1.6;
+    color: var(--mat-sys-on-surface);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .additional-info {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    font-size: 0.9rem;
+    color: var(--mat-sys-on-surface-variant);
+    p { margin-bottom: 0.5rem; }
+  }
+}
+
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}

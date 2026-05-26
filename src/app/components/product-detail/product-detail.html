@@ -1,0 +1,65 @@
+<div class="detail-container">
+  <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Go back">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  @if (productResource.isLoading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading details...</p>
+    </div>
+  } @else if (productResource.error()) {
+    <div class="error-state">
+      <p>Could not load product details.</p>
+      <button mat-button (click)="productResource.reload()">Retry</button>
+    </div>
+  } @else {
+    @let product = productResource.value();
+    @if (product) {
+      <div class="product-content">
+        <div class="image-gallery">
+          <img [src]="product.thumbnail" [alt]="product.title" class="main-image">
+          <div class="thumbnails">
+            @for (img of product.images; track img) {
+              <img [src]="img" [alt]="product.title" class="thumb">
+            }
+          </div>
+        </div>
+
+        <div class="info-panel">
+          <h1>{{ product.title }}</h1>
+          <div class="meta-row">
+            <span class="category">{{ product.category }}</span>
+            <span class="brand">by {{ product.brand }}</span>
+          </div>
+
+          <div class="price-row">
+            <span class="price">{{ product.price | currency }}</span>
+            @if (product.discountPercentage > 0) {
+              <span class="discount">-{{ product.discountPercentage }}%</span>
+            }
+          </div>
+
+          <div class="rating-row">
+            <mat-icon>star</mat-icon>
+            <span>{{ product.rating }} ({{ product.reviews.length }} reviews)</span>
+          </div>
+
+          <p class="description">{{ product.description }}</p>
+
+          <mat-chip-set aria-label="Tags">
+            @for (tag of product.tags; track tag) {
+              <mat-chip>{{ tag }}</mat-chip>
+            }
+          </mat-chip-set>
+
+          <div class="additional-info">
+            <p><strong>Stock:</strong> {{ product.availabilityStatus }} ({{ product.stock }} left)</p>
+            <p><strong>Warranty:</strong> {{ product.warrantyInformation }}</p>
+            <p><strong>Shipping:</strong> {{ product.shippingInformation }}</p>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

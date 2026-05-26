@@ -1,16 +1,12 @@
-import { Injectable, resource, signal, computed } from '@angular/core';
-import {
-  Product,
-  ProductsResponse,
-  ProductCategory,
-  AddProductPayload,
-} from './product.model';
+import { Injectable, resource, signal, computed, inject, Injector } from '@angular/core';
+import { Product, ProductsResponse, ProductCategory, AddProductPayload } from './product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private readonly baseUrl = 'https://dummyjson.com/products';
+  private readonly injector = inject(Injector);
 
   // 1. Mock products for fallback / unit testing
   private readonly mockProducts: Product[] = [
@@ -39,9 +35,9 @@ export class ProductService {
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         barcode: '123456789012',
-        qrCode: 'https://example.com/qr'
+        qrCode: 'https://example.com/qr',
       },
-      images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500']
+      images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'],
     },
     {
       id: 2,
@@ -68,14 +64,14 @@ export class ProductService {
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         barcode: '234567890123',
-        qrCode: 'https://example.com/qr'
+        qrCode: 'https://example.com/qr',
       },
-      images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500']
+      images: ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500'],
     },
     {
       id: 3,
       title: 'Coffee Mug',
-      price: 15.00,
+      price: 15.0,
       description: 'Durable ceramic coffee mug with a sleek design.',
       thumbnail: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500',
       category: 'Home',
@@ -97,14 +93,14 @@ export class ProductService {
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         barcode: '345678901234',
-        qrCode: 'https://example.com/qr'
+        qrCode: 'https://example.com/qr',
       },
-      images: ['https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500']
+      images: ['https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500'],
     },
     {
       id: 4,
       title: 'Leather Wallet',
-      price: 45.00,
+      price: 45.0,
       description: 'Genuine leather wallet with multiple card slots.',
       thumbnail: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500',
       category: 'Accessories',
@@ -126,10 +122,10 @@ export class ProductService {
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
         barcode: '456789012345',
-        qrCode: 'https://example.com/qr'
+        qrCode: 'https://example.com/qr',
       },
-      images: ['https://images.unsplash.com/photo-1627123424574-724758594e93?w=500']
-    }
+      images: ['https://images.unsplash.com/photo-1627123424574-724758594e93?w=500'],
+    },
   ];
 
   // 2. State Signals
@@ -143,11 +139,14 @@ export class ProductService {
     query: this.query(),
     category: this.selectedCategory(),
     limit: this.limit(),
-    skip: this.skip()
+    skip: this.skip(),
   }));
 
   // 4. Products Resource (automatically tracks signal changes)
-  readonly productsResource = resource<Product[], { query: string; category: string; limit: number; skip: number }>({
+  readonly productsResource = resource<
+    Product[],
+    { query: string; category: string; limit: number; skip: number }
+  >({
     params: () => this.requestParams(),
     loader: async ({ params, abortSignal }) => {
       let url = this.baseUrl;
@@ -165,13 +164,13 @@ export class ProductService {
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
-        const data = await response.json() as ProductsResponse;
+        const data = (await response.json()) as ProductsResponse;
         return data.products;
       } catch (err) {
         console.warn('Network request failed, falling back to mock products:', err);
         return this.mockProducts;
       }
-    }
+    },
   });
 
   // 5. Categories Resource
@@ -182,17 +181,17 @@ export class ProductService {
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }
-        return await response.json() as ProductCategory[];
+        return (await response.json()) as ProductCategory[];
       } catch (err) {
         console.warn('Failed to fetch categories:', err);
         return [];
       }
-    }
+    },
   });
 
   // 6. Get a single product synchronously from mock data (for testing / fallback)
   getProduct(id: number): Product | undefined {
-    return this.mockProducts.find(p => p.id === id);
+    return this.mockProducts.find((p) => p.id === id);
   }
 
   // 7. Get a single product as an asynchronous resource
@@ -206,7 +205,7 @@ export class ProductService {
           if (!response.ok) {
             throw new Error('Product not found');
           }
-          return await response.json() as Product;
+          return (await response.json()) as Product;
         } catch (err) {
           const mock = this.getProduct(productId);
           if (mock) {
@@ -214,7 +213,8 @@ export class ProductService {
           }
           throw err;
         }
-      }
+      },
+      injector: this.injector,
     });
   }
 
@@ -223,33 +223,33 @@ export class ProductService {
     const response = await fetch(`${this.baseUrl}/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     if (!response.ok) {
       throw new Error('Failed to add product');
     }
-    return await response.json() as Product;
+    return (await response.json()) as Product;
   }
 
   async updateProduct(id: number, payload: Partial<Product>): Promise<Product> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     if (!response.ok) {
       throw new Error('Failed to update product');
     }
-    return await response.json() as Product;
+    return (await response.json()) as Product;
   }
 
   async deleteProduct(id: number): Promise<Product & { isDeleted: boolean; deletedOn: string }> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
     if (!response.ok) {
       throw new Error('Failed to delete product');
     }
-    return await response.json() as Product & { isDeleted: boolean; deletedOn: string };
+    return (await response.json()) as Product & { isDeleted: boolean; deletedOn: string };
   }
 }
