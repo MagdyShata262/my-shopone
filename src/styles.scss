@@ -165,3 +165,38 @@ mat-toolbar {
 .text-muted {
   color: var(--mat-sys-on-surface-variant);
 }
+
+// ============================================
+// 6. View Transitions
+// ============================================
+
+/* Targeting the old and new snapshots of the element named (product-hero-image) */
+::view-transition-old(product-hero-image),
+::view-transition-new(product-hero-image) {
+  /* Making the animation duration half a second instead of the default speed */
+  animation-duration: 500ms;
+  animation-timing-function: ease-in-out;
+}
+
+/* Define keyframe animations */
+@keyframes rotate-out {
+  to {
+    transform: rotate(90deg);
+  }
+}
+@keyframes rotate-in {
+  from {
+    transform: rotate(-90deg);
+  }
+}
+
+/* Target view transition pseudo-elements for 'count' */
+::view-transition-old(count),
+::view-transition-new(count) {
+  animation-duration: 200ms;
+  animation-name: -ua-view-transition-fade-in, rotate-in;
+}
+
+::view-transition-old(count) {
+  animation-name: -ua-view-transition-fade-out, rotate-out;
+}

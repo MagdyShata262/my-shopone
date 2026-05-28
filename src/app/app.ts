@@ -32,12 +32,28 @@ import { ProductDetail } from './components/product-detail/product-detail';
 export class App {
   selectedProductId = signal<number | null>(null);
 
-  onProductSelected(id: number): void {
-    this.selectedProductId.set(id);
+  async onProductSelected(id: number) {
+    if (!document.startViewTransition) {
+      this.selectedProductId.set(id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    await document.startViewTransition(() => {
+      this.selectedProductId.set(id);
+    }).finished;
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onDetailClose(): void {
-    this.selectedProductId.set(null);
+  async onDetailClose() {
+    if (!document.startViewTransition) {
+      this.selectedProductId.set(null);
+      return;
+    }
+
+    await document.startViewTransition(() => {
+      this.selectedProductId.set(null);
+    }).finished;
   }
 }

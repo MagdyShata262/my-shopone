@@ -18,7 +18,8 @@
     @if (product) {
       <div class="product-content">
         <div class="image-gallery">
-          <img [src]="product.thumbnail" [alt]="product.title" class="main-image">
+          <img [src]="product.thumbnail" [alt]="product.title" class="main-image"
+               style="view-transition-name: product-hero-image">
           <div class="thumbnails">
             @for (img of product.images; track img) {
               <img [src]="img" [alt]="product.title" class="thumb">
