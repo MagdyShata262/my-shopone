@@ -1,21 +1,28 @@
 <mat-toolbar color="primary" class="app-toolbar">
-  <mat-icon class="logo-icon">restaurant_menu</mat-icon>
-  <span>Smart Recipe Box</span>
+  <a routerLink="/products" class="logo-link">
+    <mat-icon class="logo-icon">restaurant_menu</mat-icon>
+    <span class="app-title">Smart Recipe Box</span>
+  </a>
+
+  <nav class="nav-links">
+    <button mat-button routerLink="/products" routerLinkActive="active-link">
+      RECIPES
+    </button>
+    <button mat-button routerLink="/carts" routerLinkActive="active-link">
+      CARTS
+    </button>
+    <button mat-button routerLink="/cart-dashboard" routerLinkActive="active-link">
+      DASHBOARD
+    </button>
+  </nav>
+
+
   <span class="spacer"></span>
   <app-theme-switcher></app-theme-switcher>
 </mat-toolbar>
 
 <main class="content-area">
-  @if (selectedProductId(); as id) {
-  <app-product-detail [productId]="id" (close)="onDetailClose()"></app-product-detail>
-  } @else {
-  <div class="search-section">
-    <app-product-search></app-product-search>
-    <app-category-filter></app-category-filter>
-  </div>
-
-  <app-product-list (productSelected)="onProductSelected($event)"></app-product-list>
-  }
+  <router-outlet></router-outlet>
 </main>
 
 <footer class="app-footer">

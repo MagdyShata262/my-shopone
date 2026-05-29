@@ -1,4 +1,9 @@
 <div class="list-container">
+  <div class="search-section">
+    <app-product-search></app-product-search>
+    <app-category-filter></app-category-filter>
+  </div>
+
   @if (productService.productsResource.isLoading()) {
   <div class="loading-state">
     <mat-spinner diameter="50"></mat-spinner>
@@ -12,10 +17,10 @@
     </button>
   </div>
   } @else {
-  @let products = productService.productsResource.value();
-  @if (products && products.length > 0) {
+  @let data = productService.productsResource.value();
+  @if (data && data.products.length > 0) {
   <div class="product-grid">
-    @for (product of products; track product.id) {
+    @for (product of data.products; track product.id) {
     <mat-card class="product-card">
       <img mat-card-image [src]="product.thumbnail" [alt]="product.title" class="product-image"
         [style.view-transition-name]="productService.selectedCategory() === '' ? 'product-image-' + product.id : 'none'">
@@ -28,11 +33,16 @@
         <p class="description">{{ product.description | slice:0:100 }}...</p>
       </mat-card-content>
       <mat-card-actions align="end">
-        <button mat-button matButton="elevated" (click)="selectProduct(product.id)">VIEW DETAILS</button>
+        <button mat-button [routerLink]="['/products', product.id]">VIEW DETAILS</button>
       </mat-card-actions>
     </mat-card>
     }
   </div>
+
+  <mat-paginator class="paginator" [length]="data.total" [pageSize]="productService.limit()"
+    [pageIndex]="productService.currentPage()" [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)"
+    aria-label="Select page">
+  </mat-paginator>
   } @else {
   <div class="empty-state">
     <p>No recipes found matching your search.</p>

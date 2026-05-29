@@ -25,9 +25,10 @@ describe('ProductService', () => {
       }, 100);
     });
 
-    const products = service.productsResource.value();
-    expect(products).toBeDefined();
-    expect(products?.length).toBeGreaterThan(0);
+    const data = service.productsResource.value();
+    expect(data?.products).toBeDefined();
+    expect(data?.products.length).toBeGreaterThan(0);
+    expect(data?.total).toBeDefined();
   }, 10000);
 
   it('should return a product by id from mock data', () => {
@@ -72,7 +73,8 @@ describe('ProductService', () => {
     });
 
     expect(resourceInstance.value()?.id).toBe(2);
-    expect(resourceInstance.value()?.title).toBe('Smart Watch');
+    // DummyJSON product 2 is "Eyeshadow Palette with Mirror"
+    expect(resourceInstance.value()?.title).toBe('Eyeshadow Palette with Mirror');
   });
 
   it('should mock addProduct using global fetch spy', async () => {

@@ -144,7 +144,7 @@ export class ProductService {
 
   // 4. Products Resource (automatically tracks signal changes)
   readonly productsResource = resource<
-    Product[],
+    ProductsResponse,
     { query: string; category: string; limit: number; skip: number }
   >({
     params: () => this.requestParams(),
@@ -164,14 +164,20 @@ export class ProductService {
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
-        const data = (await response.json()) as ProductsResponse;
-        return data.products;
+        return (await response.json()) as ProductsResponse;
       } catch (err) {
         console.warn('Network request failed, falling back to mock products:', err);
-        return this.mockProducts;
+        return {
+          products: this.mockProducts,
+          total: this.mockProducts.length,
+          skip: params.skip,
+          limit: params.limit,
+        };
       }
     },
   });
+
+  readonly currentPage = computed(() => Math.floor(this.skip() / this.limit()));
 
   // 5. Categories Resource
   readonly categoriesResource = resource<ProductCategory[], undefined>({

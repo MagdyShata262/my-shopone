@@ -5,10 +5,7 @@ import { ProductService } from '../../product.service';
 
 @Component({
   selector: 'app-category-filter',
-  imports: [
-    CommonModule,
-    MatChipsModule,
-  ],
+  imports: [CommonModule, MatChipsModule],
   templateUrl: './category-filter.html',
   styleUrl: './category-filter.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

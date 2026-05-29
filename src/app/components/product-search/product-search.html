@@ -1,23 +1,13 @@
 <div class="search-container">
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Search recipes</mat-label>
-    <input
-      matInput
-      type="text"
-      [value]="productService.query()"
-      (input)="onSearch($event)"
-      placeholder="e.g. Pizza, Salad..."
-    />
+    <input matInput type="text" [value]="productService.query()" (input)="onSearch($event)"
+      placeholder="e.g. Pizza, Salad..." />
     <mat-icon matPrefix>search</mat-icon>
     @if (productService.query()) {
-      <button
-        matSuffix
-        mat-icon-button
-        aria-label="Clear"
-        (click)="clearSearch()"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
+    <button matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+      <mat-icon>close</mat-icon>
+    </button>
     }
   </mat-form-field>
 </div>

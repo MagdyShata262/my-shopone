@@ -1,23 +1,18 @@
 <div class="filter-container">
   <mat-chip-listbox aria-label="Category selection">
-    <mat-chip-option
-      [selected]="productService.selectedCategory() === ''"
-      (click)="onCategorySelect('')"
-    >
+    <mat-chip-option [selected]="productService.selectedCategory() === ''" (click)="onCategorySelect('')">
       All
     </mat-chip-option>
 
     @if (productService.categoriesResource.value(); as categories) {
-      @for (category of categories; track category.slug) {
-        <mat-chip-option
-          [selected]="productService.selectedCategory() === category.slug"
-          (click)="onCategorySelect(category.slug)"
-        >
-          {{ category.name }}
-        </mat-chip-option>
-      }
+    @for (category of categories; track category.slug) {
+    <mat-chip-option [selected]="productService.selectedCategory() === category.slug"
+      (click)="onCategorySelect(category.slug)">
+      {{ category.name }}
+    </mat-chip-option>
+    }
     } @else if (productService.categoriesResource.isLoading()) {
-      <div class="loading-placeholder">Loading categories...</div>
+    <div class="loading-placeholder">Loading categories...</div>
     }
   </mat-chip-listbox>
 </div>
