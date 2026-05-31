@@ -4,6 +4,7 @@ import { ProductDetail } from './components/product-detail/product-detail';
 import { CartListComponent } from './components/cart/cart-list/cart-list';
 import { CartDetailComponent } from './components/cart/cart-detail/cart-detail';
 import { CartDashboardComponent } from './components/cart/cart-dashboard/cart-dashboard';
+import { UserDashboardComponent } from './features/users/components/user-dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'products', pathMatch: 'full' },
@@ -12,4 +13,6 @@ export const routes: Routes = [
   { path: 'carts', component: CartListComponent },
   { path: 'carts/:cartId', component: CartDetailComponent },
   { path: 'cart-dashboard', component: CartDashboardComponent },
+  { path: 'users', component: UserDashboardComponent },
 ];
+
