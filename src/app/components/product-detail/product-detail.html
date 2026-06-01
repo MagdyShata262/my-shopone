@@ -1,64 +1,124 @@
 <div class="detail-container">
-  <button mat-icon-button (click)="goBack()                         " class="back-button" aria-label="Go back">
+  <button mat-icon-button (click)="goBack()" class="back-button" aria-label="Go back">
     <mat-icon>arrow_back</mat-icon>
   </button>
 
   @if (productResource.isLoading()) {
   <div class="loading-state">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading details...</p>
+    <mat-spinner diameter="45"></mat-spinner>
+    <p>Gathering product details...</p>
   </div>
-  } @else if (productResource.error()) {
+  }
+
+  @else if (productResource.error()) {
   <div class="error-state">
-    <p>Could not load product details.</p>
-    <button mat-button (click)="productResource.reload()">Retry</button>
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <p>Could not retrieve product details. Check your connection.</p>
+    <button mat-flat-button color="primary" (click)="productResource.reload()">Retry</button>
   </div>
-  } @else {
+  }
+
+  @else {
   @let product = productResource.value();
   @if (product) {
+
+  @let currentImg = selectedImage() || product.thumbnail;
+
   <div class="product-content">
+
     <div class="image-gallery">
-      <img [src]="product.thumbnail" [alt]="product.title" class="main-image"
-        style="view-transition-name: product-hero-image">
+      <div class="main-image-wrapper">
+        <img [src]="currentImg" [alt]="product.title" class="main-image"
+          style="view-transition-name: product-hero-image">
+      </div>
+
+      @if (product.images && product.images.length > 1) {
       <div class="thumbnails">
         @for (img of product.images; track img) {
-        <img [src]="img" [alt]="product.title" class="thumb">
+        <button class="thumb-btn" [class.active]="currentImg === img" (click)="selectedImage.set(img)"
+          (mouseenter)="selectedImage.set(img)">
+          <img [src]="img" [alt]="product.title" class="thumb-img">
+        </button>
         }
       </div>
+      }
     </div>
 
     <div class="info-panel">
-      <h1>{{ product.title }}</h1>
+      @if (product.brand) {
+      <div class="brand-badge">by {{ product.brand }}</div>
+      }
+      <h1 class="product-title">{{ product.title }}</h1>
+
       <div class="meta-row">
-        <span class="category">{{ product.category }}</span>
-        <span class="brand">by {{ product.brand }}</span>
+        <span class="category-tag">{{ product.category }}</span>
+        <span class="sku-tag">SKU: {{ product.sku }}</span>
       </div>
 
-      <div class="price-row">
-        <span class="price">{{ product.price | currency }}</span>
+      <div class="price-box">
+        <div class="price-row">
+          <span class="price">{{ product.price | currency }}</span>
+          @if (product.discountPercentage > 0) {
+          <span class="discount-badge">-{{ product.discountPercentage }}% OFF</span>
+          }
+        </div>
         @if (product.discountPercentage > 0) {
-        <span class="discount">-{{ product.discountPercentage }}%</span>
+        @let originalPrice = product.price / (1 - product.discountPercentage / 100);
+        <span class="old-price">Was: {{ originalPrice | currency }}</span>
         }
       </div>
 
-      <div class="rating-row">
-        <mat-icon>star</mat-icon>
-        <span>{{ product.rating }} ({{ product.reviews.length }} reviews)</span>
+      <div class="rating-badge-row">
+        <div class="stars">
+          <mat-icon class="star-icon">star</mat-icon>
+          <span class="rating-num">{{ product.rating }}</span>
+        </div>
+        <span class="reviews-count">({{ product.reviews.length }} customer reviews)</span>
       </div>
 
+      <h4 class="section-title">Overview</h4>
       <p class="description">{{ product.description }}</p>
 
-      <mat-chip-set aria-label="Tags">
+      <div class="tags-wrapper">
         @for (tag of product.tags; track tag) {
-        <mat-chip>{{ tag }}</mat-chip>
+        <span class="custom-chip">#{{ tag }}</span>
         }
-      </mat-chip-set>
-
-      <div class="additional-info">
-        <p><strong>Stock:</strong> {{ product.availabilityStatus }} ({{ product.stock }} left)</p>
-        <p><strong>Warranty:</strong> {{ product.warrantyInformation }}</p>
-        <p><strong>Shipping:</strong> {{ product.shippingInformation }}</p>
       </div>
+
+      <div class="specs-grid">
+        <div class="spec-card" [class.low-stock]="product.stock <= 5">
+          <mat-icon>inventory_2</mat-icon>
+          <div class="spec-info">
+            <span class="spec-label">Availability</span>
+            <span class="spec-value">{{ product.availabilityStatus }} ({{ product.stock }} left)</span>
+          </div>
+        </div>
+
+        <div class="spec-card">
+          <mat-icon>verified</mat-icon>
+          <div class="spec-info">
+            <span class="spec-label">Warranty</span>
+            <span class="spec-value">{{ product.warrantyInformation }}</span>
+          </div>
+        </div>
+
+        <div class="spec-card">
+          <mat-icon>local_shipping</mat-icon>
+          <div class="spec-info">
+            <span class="spec-label">Shipping</span>
+            <span class="spec-value">{{ product.shippingInformation }}</span>
+          </div>
+        </div>
+
+        <div class="spec-card">
+          <mat-icon>assignment_return</mat-icon>
+          <div class="spec-info">
+            <span class="spec-label">Return Policy</span>
+            <span class="spec-value">{{ product.returnPolicy }}</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   }

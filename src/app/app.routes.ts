@@ -1,18 +1,38 @@
 import { Routes } from '@angular/router';
-import { ProductList } from './components/product-list/product-list';
-import { ProductDetail } from './components/product-detail/product-detail';
-import { CartListComponent } from './components/cart/cart-list/cart-list';
-import { CartDetailComponent } from './components/cart/cart-detail/cart-detail';
-import { CartDashboardComponent } from './components/cart/cart-dashboard/cart-dashboard';
-import { UserDashboardComponent } from './features/users/components/user-dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'products', pathMatch: 'full' },
-  { path: 'products', component: ProductList },
-  { path: 'products/:productId', component: ProductDetail },
-  { path: 'carts', component: CartListComponent },
-  { path: 'carts/:cartId', component: CartDetailComponent },
-  { path: 'cart-dashboard', component: CartDashboardComponent },
-  { path: 'users', component: UserDashboardComponent },
-];
 
+  // استخدام loadComponent للتحميل الكسول (Lazy Loading) لرفع الأداء
+  {
+    path: 'products',
+    loadComponent: () =>
+      import('./components/product-list/product-list').then((m) => m.ProductList),
+  },
+  {
+    path: 'products/:productId',
+    loadComponent: () =>
+      import('./components/product-detail/product-detail').then((m) => m.ProductDetail),
+  },
+  {
+    path: 'carts',
+    loadComponent: () =>
+      import('./components/cart/cart-list/cart-list').then((m) => m.CartListComponent),
+  },
+  {
+    path: 'carts/:cartId',
+    loadComponent: () =>
+      import('./components/cart/cart-detail/cart-detail').then((m) => m.CartDetailComponent),
+  },
+  {
+    path: 'cart-dashboard',
+    loadComponent: () =>
+      import('./components/cart/cart-dashboard/cart-dashboard').then((m) => m.CartDashboardComponent),
+  },
+  {
+    path: 'users',
+    loadComponent: () =>
+      import('./features/users/components/user-dashboard.component').then((m) => m.UserDashboardComponent),
+  },
+  { path: '**', redirectTo: 'products' },
+];

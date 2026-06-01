@@ -9,7 +9,8 @@ import { User, LoginPayload, LoginResponse, UsersResponse } from '../models/user
 })
 export class UserService {
   private readonly baseUrl = 'https://dummyjson.com';
-  private readonly authUrl = `${this.baseUrl}/auth`;
+  // تعديل الرابط ليطابق مسارات DummyJSON الافتراضية للـ Auth والـ Profile
+  private readonly authUrl = `${this.baseUrl}/user`;
   private readonly usersUrl = `${this.baseUrl}/users`;
 
   private readonly platformId = inject(PLATFORM_ID);
@@ -56,7 +57,7 @@ export class UserService {
           this._refreshToken.set(storedRefreshToken);
           this._currentUser.set(JSON.parse(storedUser));
 
-          // Verify session on startup
+          // التحقق من الجلسة عند الإقلاع، وفي حال الفشل يتم عمل Refresh
           this.getCurrentUser().catch(() => this.refreshSession());
         }
       } catch (error) {
@@ -71,6 +72,7 @@ export class UserService {
    */
   async login(payload: LoginPayload): Promise<LoginResponse> {
     try {
+      // المسار النهائي: https://dummyjson.com/user/login
       const data = await firstValueFrom(
         this.http.post<LoginResponse>(`${this.authUrl}/login`, payload),
       );
@@ -105,11 +107,15 @@ export class UserService {
     }
 
     try {
+      // تعديل مسار التحديث بما يتوافق مع هيكلية الـ Auth لـ DummyJSON
       const data = await firstValueFrom(
-        this.http.post<{ accessToken: string; refreshToken: string }>(`${this.authUrl}/refresh`, {
-          refreshToken,
-          expiresInMins: 30,
-        }),
+        this.http.post<{ accessToken: string; refreshToken: string }>(
+          `${this.baseUrl}/auth/refresh`,
+          {
+            refreshToken,
+            expiresInMins: 30,
+          },
+        ),
       );
 
       this._accessToken.set(data.accessToken);
@@ -131,6 +137,7 @@ export class UserService {
    */
   async getCurrentUser(): Promise<User> {
     try {
+      // المسار النهائي الصائب: https://dummyjson.com/user/me
       const user = await firstValueFrom(this.http.get<User>(`${this.authUrl}/me`));
 
       this._currentUser.set(user);
@@ -168,7 +175,6 @@ export class UserService {
    */
   async getUsers(limit = 30, skip = 0): Promise<UsersResponse> {
     const params = new HttpParams().set('limit', limit.toString()).set('skip', skip.toString());
-
     return firstValueFrom(this.http.get<UsersResponse>(this.usersUrl, { params }));
   }
 

@@ -6,46 +6,63 @@
 
   @if (productService.productsResource.isLoading()) {
   <div class="loading-state">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Fetching amazing recipes...</p>
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Fetching amazing products...</p>
   </div>
-  } @else if (productService.productsResource.error()) {
+  }
+
+  @else if (productService.productsResource.error()) {
   <div class="error-state">
-    <p>Oops! Something went wrong while fetching recipes.</p>
-    <button mat-stroked-button (click)="productService.productsResource.reload()">
+    <p>Oops! Something went wrong while fetching products.</p>
+    <button mat-stroked-button color="primary" (click)="productService.productsResource.reload()">
       Try Again
     </button>
   </div>
-  } @else {
+  }
+
+  @else {
   @let data = productService.productsResource.value();
+
   @if (data && data.products.length > 0) {
   <div class="product-grid">
     @for (product of data.products; track product.id) {
     <mat-card class="product-card">
-      <img mat-card-image [src]="product.thumbnail" [alt]="product.title" class="product-image"
-        [style.view-transition-name]="productService.selectedCategory() === '' ? 'product-image-' + product.id : 'none'">
-      <mat-card-header>
-        <mat-card-title>{{ product.title }}</mat-card-title>
-        <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="price">{{ product.price | currency }}</p>
-        <p class="description">{{ product.description | slice:0:100 }}...</p>
+
+      <div class="image-wrapper">
+        <img mat-card-image [src]="product.thumbnail" [alt]="product.title" class="product-image"
+          [style.view-transition-name]="productService.selectedCategory() === '' ? 'product-image-' + product.id : 'none'">
+      </div>
+
+      <mat-card-content class="card-body">
+        <div class="meta-info">
+          <span class="category-badge">{{ product.category }}</span>
+          <span class="price">{{ product.price | currency }}</span>
+        </div>
+
+        <h3 class="product-title" [title]="product.title">{{ product.title }}</h3>
+        <p class="description">{{ product.description | slice:0:75 }}...</p>
       </mat-card-content>
-      <mat-card-actions align="end">
-        <button mat-button [routerLink]="['/products', product.id]">VIEW DETAILS</button>
+
+      <mat-card-actions align="end" class="card-actions">
+        <button mat-button color="primary" class="action-btn" [routerLink]="['/products', product.id]">
+          DETAILS
+        </button>
       </mat-card-actions>
+
     </mat-card>
     }
   </div>
 
   <mat-paginator class="paginator" [length]="data.total" [pageSize]="productService.limit()"
-    [pageIndex]="productService.currentPage()" [pageSizeOptions]="[5, 10, 25, 50]" (page)="handlePageEvent($event)"
+    [pageIndex]="productService.currentPage()" [pageSizeOptions]="[10, 20, 30, 50]" (page)="handlePageEvent($event)"
     aria-label="Select page">
   </mat-paginator>
-  } @else {
+  }
+
+  @else {
   <div class="empty-state">
-    <p>No recipes found matching your search.</p>
+    <mat-icon class="empty-icon">search_off</mat-icon>
+    <p>No products found matching your search.</p>
   </div>
   }
   }

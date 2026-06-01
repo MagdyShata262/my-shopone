@@ -15,9 +15,9 @@ export class CategoryFilter {
 
   onCategorySelect(categorySlug: string): void {
     if (this.productService.selectedCategory() === categorySlug) {
-      this.productService.selectedCategory.set('');
+      this.productService.setCategory('');
     } else {
-      this.productService.selectedCategory.set(categorySlug);
+      this.productService.setCategory(categorySlug);
     }
   }
 }

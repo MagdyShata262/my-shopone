@@ -5,52 +5,120 @@
 
 .search-section {
   background: var(--mat-sys-surface-container);
-  padding: 1rem 0;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
 }
 
+// شبكة عرض مدمجة تتسع لكروت أكثر في الصف الواحد
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
 }
 
+// الكارت الصغير المطور (Compact Design)
 .product-card {
   height: 100%;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s;
-  background-color: var(--mat-sys-surface-container-low);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+  background-color: var(--mat-sys-surface-container-low, #ffffff);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   }
 
-  .product-image {
-    height: 200px;
-    object-fit: cover;
+  .image-wrapper {
+    width: 100%;
+    height: 150px; // تقليل الارتفاع لتوفير المساحة الرأسية
+    background-color: var(--mat-sys-surface-variant, #f5f5f5);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; // استخدام contain لحماية أبعاد صور المنتجات المتفاوتة من المط
+      padding: 0.5rem;
+      transition: transform 0.3s ease;
+    }
   }
 
-  mat-card-content {
+  &:hover .product-image {
+    transform: scale(1.04); // تأثير حركي خفيف على الصورة عند الـ Hover
+  }
+
+  .card-body {
     flex-grow: 1;
-    padding-top: 1rem;
+    padding: 0.85rem; // تقليص الحواف الداخلية للكرت
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    .meta-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.2rem;
+
+      .category-badge {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        background: var(--mat-sys-surface-variant, #eee);
+        color: var(--mat-sys-on-surface-variant, #666);
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+
+      .price {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--mat-sys-primary, #1976d2);
+        margin: 0;
+      }
+    }
+
+    .product-title {
+      font-size: 0.95rem; // تصغير حجم خط العنوان ليتناسب مع هيكل الكارت
+      font-weight: 600;
+      color: var(--mat-sys-on-surface, #212529);
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; // وضع ثلاث نقاط إذا كان العنوان طويلاً لحماية التناسق
+    }
+
+    .description {
+      color: var(--mat-sys-on-surface-variant, #5f6368);
+      font-size: 0.82rem; // تصغير خط الوصف
+      line-height: 1.35;
+      margin: 0;
+    }
   }
 
-  .price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--mat-sys-primary);
-    margin-bottom: 0.5rem;
-  }
+  .card-actions {
+    padding: 0.25rem 0.5rem 0.5rem;
+    border-top: 1px solid var(--mat-sys-outline-variant, #f0f0f0);
 
-  .description {
-    color: var(--mat-sys-on-surface-variant);
-    font-size: 0.9rem;
-    line-height: 1.4;
+    .action-btn {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
   }
 }
 
+// حالات الحماية والواجهة الفارغة
 .loading-state,
 .error-state,
 .empty-state {
@@ -64,16 +132,24 @@
 
   p {
     margin-top: 1rem;
+    font-size: 1rem;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-outline, #ccc);
   }
 }
 
+// تخصيص شريط تصفح الصفحات
 .paginator {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-
   margin-top: 2rem;
-  background: transparent;
+  border-radius: 8px;
+  background: var(--mat-sys-surface-container-low, transparent);
   border-top: 1px solid var(--mat-sys-outline-variant);
 }

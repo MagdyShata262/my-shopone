@@ -8,13 +8,7 @@ import { ProductService } from '../../product.service';
 
 @Component({
   selector: 'app-product-search',
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-  ],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule],
   templateUrl: './product-search.html',
   styleUrl: './product-search.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,10 +18,10 @@ export class ProductSearch {
 
   onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.productService.query.set(input.value);
+    this.productService.setSearchQuery(input.value);
   }
 
   clearSearch(): void {
-    this.productService.query.set('');
+    this.productService.setSearchQuery('');
   }
 }
