@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -21,6 +22,7 @@ import { UserService } from '../../services/user.service';
     MatFormFieldModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    RouterLink,
   ],
   template: `
     <div class="login-wrapper">
@@ -121,6 +123,10 @@ import { UserService } from '../../services/user.service';
                 }
               </button>
             </form>
+
+            <div class="register-prompt">
+              Don't have an account? <a routerLink="/register">Create one</a>
+            </div>
           </mat-card-content>
         </mat-card>
       }
@@ -187,6 +193,13 @@ import { UserService } from '../../services/user.service';
         border-radius: 8px;
         font-size: 0.85rem;
         margin-top: 0.25rem;
+      }
+      .register-prompt {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--mat-sys-on-surface-variant);
+        a { color: var(--mat-sys-primary); font-weight: 500; text-decoration: none; }
       }
       mat-spinner {
         margin: 0 auto;

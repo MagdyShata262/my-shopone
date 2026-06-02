@@ -6,22 +6,50 @@
 
   <nav class="nav-links">
     <button mat-button routerLink="/products" routerLinkActive="active-link">
-      RECIPES
-    </button>
-    <button mat-button routerLink="/carts" routerLinkActive="active-link">
-      CARTS
-    </button>
-    <button mat-button routerLink="/users" routerLinkActive="active-link">
-      USERS
+      PRODUCTS
     </button>
     <button mat-button routerLink="/cart-dashboard" routerLinkActive="active-link">
       DASHBOARD
     </button>
-
+    <button mat-icon-button routerLink="/carts" routerLinkActive="active-link" title="My Cart">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
   </nav>
 
 
   <span class="spacer"></span>
+
+  <div class="user-actions">
+    @if (userService.isAuthenticated()) {
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+        <img [src]="userService.currentUser()?.image" class="user-avatar-sm" alt="User">
+        <span>{{ userService.currentUser()?.firstName }}</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu">
+        @if (userService.currentUser()?.role === 'admin') {
+          <button mat-menu-item routerLink="/admin">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Admin Panel</span>
+          </button>
+        }
+        <button mat-menu-item routerLink="/users">
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+        </button>
+        <button mat-menu-item (click)="userService.logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+    } @else {
+      <button mat-flat-button color="accent" routerLink="/login">
+        <mat-icon>login</mat-icon>
+        LOGIN
+      </button>
+    }
+  </div>
+
   <app-theme-switcher></app-theme-switcher>
 </mat-toolbar>
 

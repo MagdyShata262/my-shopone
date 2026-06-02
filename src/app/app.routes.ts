@@ -34,5 +34,26 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/users/components/user-dashboard.component').then((m) => m.UserDashboardComponent),
   },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/users/components/user-login/user-login.component').then((m) => m.UserLoginComponent),
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/users/components/user-register/user-register').then((m) => m.UserRegisterComponent),
+  },
+  {
+    path: 'checkout',
+    loadComponent: () =>
+      import('./components/checkout/checkout').then((m) => m.CheckoutComponent),
+  },
+  {
+    path: 'admin',
+    canActivate: [() => import('./features/users/guards/admin.guard').then((m) => m.adminGuard)],
+    loadComponent: () =>
+      import('./features/admin/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboardComponent),
+  },
   { path: '**', redirectTo: 'products' },
 ];
